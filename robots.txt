@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://justrainer.github.io/selfhost-guides/sitemap.xml.gz
