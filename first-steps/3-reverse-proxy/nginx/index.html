@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/selfhost-guides">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.734981741423">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.734997565498">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/selfhost-guides/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../../resources/css/retype.css?v=2.4.0.734981741423" rel="stylesheet" />
+    <link href="../../../resources/css/retype.css?v=2.4.0.734997565498" rel="stylesheet" />
 
-    <script type="text/javascript" src="../../../resources/js/config.js?v=2.4.0.734981741423" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../../../resources/js/config.js?v=2.4.0.734997565498" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../../../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../../../resources/js/lunr.js?v=2.4.0.734981741423" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../../../resources/js/prism.js?v=2.4.0.734981741423" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../../../resources/js/lunr.js?v=2.4.0.734997565498" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../../../resources/js/prism.js?v=2.4.0.734997565498" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -200,8 +200,7 @@
         <span>Installation with Docker Compose</span>
     </h2>
 </doc-anchor-target>
-<p>Nginx is a reverse proxy, which we will use to direct traffic on your domain name to the different services on your server. There are different options to fulfill this task, such as <a href="https://www.nginx.com/blog/deploying-nginx-nginx-plus-docker/">bare nginx</a>, <a href="https://doc.traefik.io/traefik/getting-started/quick-start/">traefik</a> and <a href="">caddy</a>. You&#x27;re free to explore these other options, but they won&#x27;t be covered in this guide.</p>
-<p>One thing that many people don&#x27;t properly set up is their ports. No matter which app you&#x27;re going to set up in the future, their documentation will ask you to open ports on your hosts. This means that the services are easily accessible to anyone using a combination of your servers IP and the specified port of the host. <strong>Doing this is a big security risk and defies any use of a reverse proxy!</strong> It is important to understand that you do not need to open any ports to make a service accessible to Nginx, and therefor the open internet. I&#x27;ll point this out again in a moment.</p>
+<p>Nginx is a reverse proxy, which we will use to direct traffic on your domain name to the different services on your server. Since the classic Nginx is entirely configured in text files, we will be using an extension called &quot;Nginx Proxy Manager&quot; or &quot;NPM&quot; for short. It automates the creation of your config files with an easy-to-use web interface and allows for a fast and easy overview and management of your hosts.</p>
 <p>To get started with the Nginx setup, create a new folder at any location you please. As an example, we&#x27;re going to use <code v-pre>mkdir -p /home/docker/nginx</code>, followed by <code v-pre>cd /home/docker/nginx</code>. Now, run <code v-pre>nano compose.yml</code> and paste the following code:</p>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
 <div class="codeblock-title">compose.yml</div>
@@ -315,6 +314,14 @@ volumes:
 	data:</code></pre>
 </doc-codeblock></div>
 <p>Exit and save out of nano, then run <code v-pre>docker compose up -d</code> to start Nginx again, but this time in the background. Reload the Nginx website to make sure it&#x27;s running and working, and run <code v-pre>lsof -Pni | grep docker</code> in your terminal to confirm that only port 443 is opened.</p>
+<doc-anchor-target id="important-information-for-future-apps">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#important-information-for-future-apps">#</doc-anchor-trigger>
+        <span>Important information for future apps</span>
+    </h2>
+</doc-anchor-target>
+<p>Many people get confused about opening up their ports. Most app documentations tell you to open ports in the Docker Compose script. However, opening a port is a big security risk and defeats the purpose of a reverse proxy. Remember, <strong>you do not need to open any ports</strong> to make a service accessible to Nginx and therefore the open internet. Just add the new container to your nginx network (i.e. <code v-pre>nginx_default</code>), note the required port and enter both container name and port in the Nginx web interface when creating the host.</p>
+<p>Similarly, instead of using IP addresses to refer to hosts, always use the container name, which Docker automatically resolves. This applies to Nginx hosts and apps accessing other services, for example a separated database container.</p>
 
                                 
                                 <!-- Required only on API pages -->

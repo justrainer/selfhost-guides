@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/selfhost-guides">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.734981741423">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.734997565498">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/selfhost-guides/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=2.4.0.734981741423" rel="stylesheet" />
+    <link href="../../resources/css/retype.css?v=2.4.0.734997565498" rel="stylesheet" />
 
-    <script type="text/javascript" src="../../resources/js/config.js?v=2.4.0.734981741423" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../../resources/js/config.js?v=2.4.0.734997565498" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../../resources/js/lunr.js?v=2.4.0.734981741423" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../../resources/js/prism.js?v=2.4.0.734981741423" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../../resources/js/lunr.js?v=2.4.0.734997565498" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../../resources/js/prism.js?v=2.4.0.734997565498" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -200,8 +200,7 @@
     <a href="https://github.com/dani-garcia/vaultwarden/wiki" class="absolute block inset-0"></a>
 </div>
 </p>
-<p>You&#x27;re coming along nicely, and are finally ready to actually install Vaultwarden. As you&#x27;re getting more familiar with Linux navigation, Docker and nginx hosts, I&#x27;ll be summarizing more and more from here on out.</p>
-<p>To start, make a new directory for the Vaultwarden config: <code v-pre>mkdir /home/docker/vaultwarden</code> and open it for editing: <code v-pre>nano /home/docker/vaultwarden/compose.yml</code>. Paste the following contents:</p>
+<p>To start, make a new directory for the Vaultwarden config (e.g. <code v-pre>mkdir /home/docker/vaultwarden</code>), start editing with <code v-pre>nano compose.yml</code> and paste the following contents:</p>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
 <div class="codeblock-title">compose.yml</div>
 <pre class="language-yaml"><code v-pre class="language-yaml">services:
@@ -240,16 +239,12 @@ networks:
   nginx_default:
     external: true</code></pre>
 </doc-codeblock></div>
-<p>Again, some notes on this compose file:</p>
+<p>Some notes on this compose file:</p>
 <ul>
-<li>To make Vaultwarden accessible from the outside world, we need to add it to a network that Nginx is also in. To make it easy, we simply add it to the network that Nginx created on startup. Note that it&#x27;s actually called differently than in the Nginx compose file, because docker prepends the project name when creating networks, volumes and unnamed containers.
-<ul>
-<li>To do this, we need to add the <code v-pre>external: true</code> property to the network when we define it at the end of the file. This specifies that the network does not belong to this project, but is an outside object.</li>
-</ul>
-</li>
-<li>We&#x27;ve also specified a new line: <code v-pre>env_file: .env</code>. These files store &quot;environment variables&quot; that many containers use for customization.</li>
-<li>Vaultwarden uses a PostreSQL database to store all the data you provide it. This database <strong>doesn&#x27;t need to be</strong> accessible from the outside world - it would be very problematic if it was. Therefor, we don&#x27;t add it to the Nginx network. We create a separate network, just for the communication between Vaultwarden and the database. No other service that&#x27;s not related to Vaultwarden should be in this network!</li>
-<li>In this compose file, I&#x27;ve specified the postgres release <code v-pre>14-alpine</code>. This will be updated in the future, to <code v-pre>15-alpine</code>, <code v-pre>16-alpine</code> and so on. Check the <a href="https://hub.docker.com/_/postgres">official Docker repo</a> for the latest version and change this accordingly.</li>
+<li>Make sure to replace the password in <strong>line 20</strong></li>
+<li>The line <code v-pre>env_file: .env</code> specifies a separated environment file that many containers use for customization.</li>
+<li>Vaultwarden uses a PostreSQL database to store all the data you provide it. This database <strong>doesn&#x27;t need to be</strong> accessible from the outside world - it would be very problematic if it was. Therefore, we don&#x27;t add it to the Nginx network. We create a separate network, just for the communication between Vaultwarden and the database. Nothing non-Vaultwarden should be in this network!</li>
+<li>In this compose file, I&#x27;ve specified the postgres release <code v-pre>14-alpine</code>. This will be updated in the future, to <code v-pre>15-alpine</code>, <code v-pre>16-alpine</code> and so on. Check the <a href="https://hub.docker.com/_/postgres">official Docker repo</a> for the latest version and update this accordingly.</li>
 </ul>
 <p>As mentioned, we also need an environment variables file. You can get it from the <a href="https://github.com/dani-garcia/vaultwarden/blob/main/.env.template">official repo</a>, or use this direct command to download it right into your project folder:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -262,9 +257,7 @@ networks:
 <pre class="language-none"><code v-pre class="language-none">DATABASE_URL=postgresql://vault:&lt;db_password&gt;@vaultwarden-db:5432/vaultwarden
 </code></pre>
 </doc-codeblock></div>
-<ul>
-<li>Use the &lt;db_password&gt; you&#x27;ve specified in the compose file!</li>
-</ul>
+<p>Use the &lt;db_password&gt; you&#x27;ve specified in the compose file!</p>
 </li>
 <li><p><code v-pre>WEBSOCKET_ENABLED=true</code></p>
 </li>
@@ -275,7 +268,7 @@ networks:
 </li>
 <li><p><code v-pre>DOMAIN=https://vault.your.domain</code></p>
 <ul>
-<li>Obviously, set this to the domain you wanna access Vaultwarden on.</li>
+<li>Change this to the domain you want to access Vaultwarden on.</li>
 </ul>
 </li>
 </ul>
@@ -286,7 +279,7 @@ networks:
         <span>Exposing Vaultwarden</span>
     </h2>
 </doc-anchor-target>
-<p>Now, all that&#x27;s left is to set up the host in Nginx. It&#x27;s as easy as before:</p>
+<p>Now, all that&#x27;s left is to set up the host in Nginx:</p>
 <ol>
 <li>Open the Nginx interface, switch to <code v-pre>Proxy Hosts</code> and <code v-pre>Add new Host</code></li>
 <li>Enter the domain you&#x27;ve specified in the .env file, e.g. <code v-pre>vault.your.domain</code></li>
@@ -330,11 +323,39 @@ proxy_set_header Connection &quot;upgrade&quot;;</code></pre>
         <span>Securing Vaultwarden with CrowdSec</span>
     </h2>
 </doc-anchor-target>
+<p>Vaultwarden is already very secure. It brings its own rate limiter for login attempts to combat bruteforcing, and since you&#x27;re behind the Cloudflare Proxy, you&#x27;re also protected from DDoS and other attacks. There&#x27;s barely anything left to do, but we can go one final step. Should someone find this service and decide to bruteforce your login, we can ban their entire IP to permit access to the entire server. This will take some setup, so stay with me here.</p>
+<doc-anchor-target id="prerequisite">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#prerequisite">#</doc-anchor-trigger>
+        <span>Prerequisite</span>
+    </h3>
+</doc-anchor-target>
+<p>
+<div class="mb-6 px-5 py-4 flex justify-between relative border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded transition-colors duration-150">
+    <div class="flex items-center text-blue-500 dark:text-blue-400">
+        <span class="inline-block mb-px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="presentation" fill="currentColor"><path d="M17.28 9.28a.75.75 0 00-1.06-1.06l-5.97 5.97-2.47-2.47a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l6.5-6.5z"/><path fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zM2.5 12a9.5 9.5 0 1119 0 9.5 9.5 0 01-19 0z"/></svg>
+        </span>
+        <span class="inline-block font-medium ml-2">CrowdSec</span>
+    </div>
+    <div class="flex items-center text-xs text-gray-400 dark:text-dark-400">
+        <span>../../hardening/crowdsec/</span>
+    </div>
+    <a href="../../hardening/crowdsec/" class="absolute block inset-0"></a>
+</div>
+</p>
+<doc-anchor-target id="admin-panel-setup">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#admin-panel-setup">#</doc-anchor-trigger>
+        <span>Admin Panel Setup</span>
+    </h3>
+</doc-anchor-target>
+<p>Before we can do anything meaningful, we need to change an integral setting in the Vaultwarden Admin panel. Open Vaultwarden Admin Panel by typing in your vault web address and appending <code v-pre>/admin</code> to the URL (e.g. <code v-pre>vault.your.domain/admin</code>). This should directly lead you to the unsecured admin panel. Navigate into the <code v-pre>Advanced Settings</code> category and enter <code v-pre>CF-Connecting-IP</code> into the <code v-pre>Client IP header</code> field. This enables Vaultwarden to see the real IP addresses of people connecting to your instance, instead of the Cloudflare Proxys&#x27; IP.</p>
 <div class="flex mb-6">
-    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-300"></div>
+    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
     <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
         <div class="flex items-center ml-4 h-7">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-300" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
                 <g fill="currentColor"><g>
                     <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
                     <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
@@ -343,53 +364,23 @@ proxy_set_header Connection &quot;upgrade&quot;;</code></pre>
             </svg>
         </div>
         <div class="pr-5 ml-3 w-full">
-<p>This chapter will soon move into its own article</p>
+<p>While you&#x27;re here, you can also change some other settings, like disabling new signups, or anything else you deem useful.</p>
         </div>
     </div>
 </div>
-<p>Vaultwarden is already very secure. It brings its own rate limiter for login attempts to combat bruteforcing, and since you&#x27;re behind the Cloudflare Proxy, you&#x27;re also protected from DDoS and other attacks. There&#x27;s barely anything left to do, but we can go one final step. Should someone find this service and decide to bruteforce your login, we can ban their entire IP to permit access to the entire server. This will take some setup, so stay with me here.</p>
-<p>Many people would use Fail2Ban for this case, but I&#x27;ve found CrowdSec to be both easier to manage and especially monitor, and more efficient in its banning of offenders. Feel free to figure out Fail2Ban on your own if you so desire - this guide will cover CrowdSec.</p>
-<doc-anchor-target id="admin-panel-setup">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#admin-panel-setup">#</doc-anchor-trigger>
-        <span>Admin Panel Setup</span>
-    </h3>
-</doc-anchor-target>
-<p>Before we can do anything meaningful, we need to change an integral setting in the Vaultwarden Admin panel. To do this, open your Vaultwarden Website, then append <code v-pre>/admin</code> to the URL (e.g. <code v-pre>vault.your.domain/admin</code>). This should directly lead you to the unsecured admin panel - don&#x27;t worry, we&#x27;ll fix that at the end of the guide. For now, navigate into the <code v-pre>Advanced Settings</code> category and enter <code v-pre>CF-Connecting-IP</code> into the <code v-pre>Client IP header</code> field. This enables Vaultwarden to see the real IP addresses of people connecting to your instance, instead of the Cloudflare Proxys&#x27; IP.</p>
-<blockquote>
-<p>While you&#x27;re here, you can also change some other settings, like disabling new signups, or anything else you deem useful.</p>
-</blockquote>
 <p>Save your changes with the button at the bottom, and close the tab.
-If you wanna control that this has worked, run <code v-pre>docker logs -f vaultwarden-app</code>, open the Vaultwarden page and log in. You should see your IP in the Docker logs. Should you not have made an account yet, you can also try logging in with fake credentials.</p>
-<doc-anchor-target id="installing-crowdsec">
+If you want to control that this has worked, run <code v-pre>docker logs -f vaultwarden-app</code>, open the Vaultwarden page and log in. Should you not have made an account yet, you can also try logging in with fake credentials. You should see your IP in the Docker logs.</p>
+<doc-anchor-target id="configuring-crowdsec">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#installing-crowdsec">#</doc-anchor-trigger>
-        <span>Installing CrowdSec</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#configuring-crowdsec">#</doc-anchor-trigger>
+        <span>Configuring CrowdSec</span>
     </h3>
 </doc-anchor-target>
-<p>
-<div class="mb-6 px-5 py-4 flex justify-between relative border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded transition-colors duration-150">
-    <div class="flex items-center text-blue-500 dark:text-blue-400">
-        <span class="inline-block mb-px">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="presentation" fill="currentColor"><path fill="none" d="M0 0h24v24H0z"/><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z"/></svg>
-        </span>
-        <span class="inline-block font-medium ml-2">Official Docs</span>
-    </div>
-    <div class="flex items-center text-xs text-gray-400 dark:text-dark-400">
-        <span>https://docs.crowdsec.net/docs/getting_started/install_crowdsec</span>
-    </div>
-    <a href="https://docs.crowdsec.net/docs/getting_started/install_crowdsec" class="absolute block inset-0"></a>
-</div>
-</p>
-<p>Now get back to your terminal, and run the following commands, one by one:</p>
+<p>The CrowdSec hub already has a helpful collection for vaultwarden that covers the entire parsing, detection and banning. To install it, run the following command:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-none"><code v-pre class="language-none">$ curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash
-$ sudo apt install crowdsec
-$ sudo apt install crowdsec-firewall-bouncer-iptables
-$ cscli collections install Dominic-Wagner/vaultwarden</code></pre>
+<pre class="language-none"><code v-pre class="language-none">$ cscli collections install Dominic-Wagner/vaultwarden</code></pre>
 </doc-codeblock></div>
-<p>With these commands, you&#x27;ve installed CrowdSec, their firewall bouncer, and the Vaultwarden configuration. Now, we need to set these components up properly to enable them to communicate with each other.</p>
-<p>First, run <code v-pre>nano /etc/crowdsec/acquis.yaml</code> to edit the <strong>CrowdSec Acquisition File</strong>, where we will add the Docker logs of the Vaultwarden container. Add the following text at the end of the file:</p>
+<p>Now, you need to add the Vaultwarden container logs to the <strong>CrowdSec Acquisition File</strong>. Run <code v-pre>nano /etc/crowdsec/acquis.yaml</code> to edit the file and add the following text at the end:</p>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
 <div class="codeblock-title">acquis.yaml</div>
 <pre class="language-yaml"><code v-pre class="language-yaml">---
@@ -400,23 +391,9 @@ labels:
   type: Vaultwarden
 ---</code></pre>
 </doc-codeblock></div>
-<p>If you set a different container name for your Vaultwarden container, change that accordingly here. The label on the other hand is required by the Vaultwarden Collection and has to be exactly like above.</p>
+<p>If you set a different container name for your Vaultwarden container, adjust that here. The label on the other hand is required by the Vaultwarden collection and has to be exactly like above.</p>
 <p>To finish this step, run <code v-pre>systemctl reload crowdsec</code>. Open your Vaultwarden website once more, and log in with either real or fake credentials. Then, run <code v-pre>cscli metrics</code> in the terminal and confirm that <code v-pre>docker:vaultwarden-app</code> is listed as one of the data sources, with some lines read already.</p>
-<doc-anchor-target id="configure-firewall-bouncer">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#configure-firewall-bouncer">#</doc-anchor-trigger>
-        <span>Configure Firewall Bouncer</span>
-    </h3>
-</doc-anchor-target>
-<p>Next, we&#x27;re setting up the firewall bouncer. This again requires running a couple of commands. First, run <code v-pre>ip6tables -N DOCKER-USER</code> to add an IPv6 chain, then run both <code v-pre>iptables -L</code> and <code v-pre>ip6tables -L</code>, each time checking that a <code v-pre>Chain DOCKER-USER</code> does exist.</p>
-<p>Now, run <code v-pre>nano /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml</code> to change some things in the bouncer config:</p>
-<ul>
-<li>Change <code v-pre>disable_ipv6:</code> to <code v-pre>true</code></li>
-<li>Uncomment <code v-pre>- DOCKER-USER</code> under <code v-pre>iptables_chains</code></li>
-<li>Leave the rest unchanged</li>
-</ul>
-<p>Save your edits and quit nano, then run <code v-pre>systemctl reload crowdsec-firewall-bouncer</code> to apply your changes. You can follow this up with <code v-pre>systemctl status crowdsec-firewall-bouncer</code> and make sure its both running and healthy. Finally, run <code v-pre>iptables -L DOCKER-USER</code> and <code v-pre>ip6tables -L DOCKER-USER</code>, each time checking that a <code v-pre>crowdsec-blacklists</code> rule has been applied. The name differs slightly between <code v-pre>ip</code> and <code v-pre>ip6</code>.</p>
-<p>That&#x27;s it. CrowdSec now runs in the background, monitoring your SSH logs as well as your Vaultwarden login panel, and will automatically ban all IPs that try to bruteforce your logins. You can run <code v-pre>cscli metrics</code> to check how many logs have been processed, and <code v-pre>cscli alerts list</code> to see all the bans triggered.</p>
+<p>Since you&#x27;ve already configured the bouncer in the CrowdSec setup, you&#x27;re already finished here! CrowdSec will now monitor your login page and ban anyone who&#x27;s bruteforcing the site.</p>
 <doc-anchor-target id="securing-the-admin-panel">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#securing-the-admin-panel">#</doc-anchor-trigger>
@@ -514,11 +491,11 @@ fi</code></pre>
                             
                                 <nav class="flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../first-steps/4-firewall/">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../hardening/crowdsec/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
-                                                <span class="block mt-1">Setup the Firewall</span>
+                                                <span class="block mt-1">Crowd​Sec</span>
                                             </span>
                                         </a>
                                     </div>

@@ -10,24 +10,24 @@
     <meta name="generator" content="Retype 2.4.0">
 
     <!-- Primary Meta Tags -->
-    <title>Reverse Proxy | Selfhost Guides</title>
-    <meta name="title" content="Reverse Proxy | Selfhost Guides">
-    <meta name="description" content="This is a content skeleton, and not yet properly written out." />
+    <title>CrowdSec | Selfhost Guides</title>
+    <meta name="title" content="CrowdSec | Selfhost Guides">
+    <meta name="description" content="CrowdSec functions similarly to Fail2Ban. It reads log files (or other data streams), finds failed login attempts via patterns, and bans IP addresses..." />
 
     <!-- Canonical -->
-    <link rel="canonical" href="https://justrainer.github.io/selfhost-guides/first-steps/3-reverse-proxy/" />
+    <link rel="canonical" href="https://justrainer.github.io/selfhost-guides/hardening/crowdsec/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://justrainer.github.io/selfhost-guides/first-steps/3-reverse-proxy/">
-    <meta property="og:title" content="Reverse Proxy | Selfhost Guides">
-    <meta property="og:description" content="This is a content skeleton, and not yet properly written out.">
+    <meta property="og:url" content="https://justrainer.github.io/selfhost-guides/hardening/crowdsec/">
+    <meta property="og:title" content="CrowdSec | Selfhost Guides">
+    <meta property="og:description" content="CrowdSec functions similarly to Fail2Ban. It reads log files (or other data streams), finds failed login attempts via patterns, and bans IP addresses...">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://justrainer.github.io/selfhost-guides/first-steps/3-reverse-proxy/">
-    <meta property="twitter:title" content="Reverse Proxy | Selfhost Guides">
-    <meta property="twitter:description" content="This is a content skeleton, and not yet properly written out.">
+    <meta property="twitter:url" content="https://justrainer.github.io/selfhost-guides/hardening/crowdsec/">
+    <meta property="twitter:title" content="CrowdSec | Selfhost Guides">
+    <meta property="twitter:description" content="CrowdSec functions similarly to Fail2Ban. It reads log files (or other data streams), finds failed login attempts via patterns, and bans IP addresses...">
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/selfhost-guides/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
@@ -36,6 +36,7 @@
     <script type="text/javascript" src="../../resources/js/config.js?v=2.4.0.734997565498" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
     <script id="lunr-js" type="text/javascript" src="../../resources/js/lunr.js?v=2.4.0.734997565498" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../../resources/js/prism.js?v=2.4.0.734997565498" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -153,99 +154,159 @@
                                 <div id="docs-sidebar-right-toggle"></div>
                 
                                 <!-- Page content  -->
-<doc-anchor-target id="reverse-proxy" class="break-words">
+<doc-anchor-target id="crowdsec" class="break-words">
     <h1>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#reverse-proxy">#</doc-anchor-trigger>
-        <span>Reverse Proxy</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#crowdsec">#</doc-anchor-trigger>
+        <span>CrowdSec</span>
     </h1>
 </doc-anchor-target>
-<div class="flex mb-6">
-    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-yellow-500"></div>
-    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
-        <div class="flex items-center ml-4 h-7">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-yellow-500" width="22" height="22" viewBox="0 0 24 24" role="presentation">
-                <g fill="currentColor"><g>
-                    <path d="M22.48 15.59L14.01 1.45A2.968 2.968 0 0012.16.09c-.78-.19-1.58-.07-2.27.35-.41.25-.76.6-1.01 1.01v.01L.4 15.6c-.83 1.43-.33 3.27 1.1 4.1.45.26.95.4 1.48.4h16.95c.8-.01 1.55-.33 2.11-.9.56-.57.87-1.33.86-2.13a3.04 3.04 0 00-.42-1.48zm-1.87 2.21c-.19.19-.44.3-.69.3H2.99c-.17 0-.34-.05-.49-.13a.992.992 0 01-.37-1.35L10.6 2.48c.08-.14.2-.25.34-.33a.992.992 0 011.37.33l8.46 14.13c.09.15.13.32.13.49 0 .26-.1.51-.29.7z"></path>
-                    <path d="M11.45 12.1c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .56.45 1 1 1zM11.46 14.1c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
-                </g></g>
-            </svg>
-        </div>
-        <div class="pr-5 ml-3 w-full">
-<p>This is a content skeleton, and not yet properly written out.</p>
-        </div>
-    </div>
-</div>
-<doc-anchor-target id="what-does-a-reverse-proxy-do">
+<doc-anchor-target id="how-does-it-work">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#what-does-a-reverse-proxy-do">#</doc-anchor-trigger>
-        <span>What does a Reverse Proxy do?</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-does-it-work">#</doc-anchor-trigger>
+        <span>How does it work</span>
     </h2>
 </doc-anchor-target>
-<ul>
-<li>allows you to access any of your apps with a subdomain or subdirectory on your domain.</li>
-<li>eliminates requirement to open ports for different apps (with exceptions)</li>
-<li>allows fine grained control over which traffic moves in and out of your server</li>
-</ul>
-<doc-anchor-target id="common-errors-when-using-a-reverse-proxy">
+<p>CrowdSec functions similarly to Fail2Ban. It reads log files (or other data streams), finds failed login attempts via patterns, and bans IP addresses that repeatedly fail logins. Contrary to Fail2Ban however, it then shares the offending IP detected on your host with the global CrowdSec network and alerts any other instance of that address. Same goes for your host - once an IP attacks any host using CrowdSec, their address is automatically banned on your host as well.</p>
+<p>CrowdSec also has <a href="https://hub.crowdsec.net/browse">a hub</a>, where users share configurations for many different apps. This way, you rarely have to write a parser yourself, instead simply installing the configuration.</p>
+<p>After the installation, CrowdSec will automatically start monitoring your SSH port. The <strong>default bantime is 4 hours</strong>, but that&#x27;s configurable in the config file. If you want to learn more about how to configure and use CrowdSec, please refer to their documentation.</p>
+<doc-anchor-target id="installing-crowdsec">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#common-errors-when-using-a-reverse-proxy">#</doc-anchor-trigger>
-        <span>Common Errors when using a reverse proxy</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#installing-crowdsec">#</doc-anchor-trigger>
+        <span>Installing CrowdSec</span>
     </h2>
 </doc-anchor-target>
-<ul>
-<li>Exposing ports of applications even though you access them through a browser</li>
-<li>not locking down your server to only take requests from the cloudflare proxy</li>
-<li>not using proper encryption between reverse proxy and cloudflare</li>
-</ul>
-<doc-anchor-target id="which-reverse-proxy-should-i-use">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#which-reverse-proxy-should-i-use">#</doc-anchor-trigger>
-        <span>Which Reverse Proxy should I use?</span>
-    </h2>
-</doc-anchor-target>
-<ul>
-<li>common ones are Nginx, Nginx Proxy Manager, Traefik and Caddy</li>
-<li>list some pros and cons of each, shortly describing</li>
-<li>guides are usually written with npm in mind, since its easy to use and setup</li>
-</ul>
 <p>
 <div class="mb-6 px-5 py-4 flex justify-between relative border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded transition-colors duration-150">
     <div class="flex items-center text-blue-500 dark:text-blue-400">
         <span class="inline-block mb-px">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="presentation" fill="currentColor"><path fill="none" d="M0 0h24v24H0z"/><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z"/></svg>
         </span>
-        <span class="inline-block font-medium ml-2">Nginx</span>
+        <span class="inline-block font-medium ml-2">Official Docs</span>
     </div>
     <div class="flex items-center text-xs text-gray-400 dark:text-dark-400">
-        <span>nginx/</span>
+        <span>https://docs.crowdsec.net/docs/getting_started/install_crowdsec</span>
     </div>
-    <a href="nginx/" class="absolute block inset-0"></a>
-</div>
-<div class="mb-6 px-5 py-4 flex justify-between relative border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded transition-colors duration-150">
-    <div class="flex items-center text-blue-500 dark:text-blue-400">
-        <span class="inline-block mb-px">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="presentation" fill="currentColor"><path fill="none" d="M0 0h24v24H0z"/><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z"/></svg>
-        </span>
-        <span class="inline-block font-medium ml-2">Traefik <strong>(External link)</strong></span>
-    </div>
-    <div class="flex items-center text-xs text-gray-400 dark:text-dark-400">
-        <span>https://doc.traefik.io/traefik/getting-started/quick-start/</span>
-    </div>
-    <a href="https://doc.traefik.io/traefik/getting-started/quick-start/" class="absolute block inset-0"></a>
-</div>
-<div class="mb-6 px-5 py-4 flex justify-between relative border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded transition-colors duration-150">
-    <div class="flex items-center text-blue-500 dark:text-blue-400">
-        <span class="inline-block mb-px">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="presentation" fill="currentColor"><path fill="none" d="M0 0h24v24H0z"/><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z"/></svg>
-        </span>
-        <span class="inline-block font-medium ml-2">Caddy <strong>(External link)</strong></span>
-    </div>
-    <div class="flex items-center text-xs text-gray-400 dark:text-dark-400">
-        <span>https://caddyserver.com/docs/quick-starts/reverse-proxy</span>
-    </div>
-    <a href="https://caddyserver.com/docs/quick-starts/reverse-proxy" class="absolute block inset-0"></a>
+    <a href="https://docs.crowdsec.net/docs/getting_started/install_crowdsec" class="absolute block inset-0"></a>
 </div>
 </p>
+<p>Open your terminal, and run the following commands, one by one:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">$ curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash
+$ sudo apt install crowdsec
+$ sudo apt install crowdsec-firewall-bouncer-iptables</code></pre>
+</doc-codeblock></div>
+<p>This adds the CrowdSec repository to apt, installs the CrowdSec client (which orchestrates the different components) and the firewall bouncer (which does the actual banning of IPs).</p>
+<doc-anchor-target id="configure-firewall-bouncer">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#configure-firewall-bouncer">#</doc-anchor-trigger>
+        <span>Configure Firewall Bouncer</span>
+    </h2>
+</doc-anchor-target>
+<p>The firewall bouncer needs some initial setup. To enable IPv6 support, run <code v-pre>ip6tables -N DOCKER-USER</code>, adding a needed IPv6 chain. Then run both <code v-pre>iptables -L</code> and <code v-pre>ip6tables -L</code>, each time checking that the entry <code v-pre>Chain DOCKER-USER</code> exists.</p>
+<div class="flex mb-6">
+    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
+                    <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
+                    <path fill="none" d="M0 0h24v24H0z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3 w-full">
+<p>This <code v-pre>DOCKER-USER</code> chain is important, since it&#x27;s the one Docker uses to manage access to its containers. If this chain isn&#x27;t used, access to your services won&#x27;t be restricted in case of a ban.</p>
+        </div>
+    </div>
+</div>
+<p>Now, run <code v-pre>nano /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml</code> to adjust the bouncer config:</p>
+<ul>
+<li>Change <code v-pre>disable_ipv6:</code> to <code v-pre>false</code></li>
+<li>Uncomment <code v-pre>- DOCKER-USER</code> under <code v-pre>iptables_chains</code></li>
+</ul>
+<doc-panel id="complete-file" collapsed>
+    <template #title><svg xmlns="http://www.w3.org/2000/svg" class="docs-icon" viewBox="0 0 24 24" role="presentation"><g fill="currentColor"><g><path fill-rule="evenodd" d="M5 2.5a.5.5 0 00-.5.5v18a.5.5 0 00.5.5h14a.5.5 0 00.5-.5V8.5h-4a2 2 0 01-2-2v-4H5zm10 0v4a.5.5 0 00.5.5h4a.5.5 0 00-.146-.336l-4.018-4.018A.5.5 0 0015 2.5zM3 3a2 2 0 012-2h9.982a2 2 0 011.414.586l4.018 4.018A2 2 0 0121 7.018V21a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></g></g></svg> Complete File</template>
+<p>Confirm that the highlighted lines match your file:</p>
+<div class="codeblock-wrapper"><doc-codeblock line-numbers>
+<pre class="language-yaml" data-line="1,15,27,29"><code v-pre class="language-yaml">mode: iptables
+pid_dir: /var/run/
+update_frequency: 10s
+daemonize: true
+log_mode: file
+log_dir: /var/log/
+log_level: info
+log_compression: true
+log_max_size: 100
+log_max_backups: 3
+log_max_age: 30
+api_url: http://127.0.0.1:8080/
+api_key: h8a9shd8asdhja09sdh71928dh10j211
+insecure_skip_verify: false
+disable_ipv6: false
+deny_action: DROP
+deny_log: false
+supported_decisions_types:
+  - ban
+#to change log prefix
+deny_log_prefix: &quot;crowdsec: &quot;
+#to change the blacklists name
+blacklists_ipv4: crowdsec-blacklists
+blacklists_ipv6: crowdsec6-blacklists
+#if present, insert rule in those chains
+iptables_chains:
+  - INPUT
+#  - FORWARD
+  - DOCKER-USER
+
+## nftables
+nftables:
+  ipv4:
+    enabled: true
+    set-only: false
+    table: crowdsec
+    chain: crowdsec-chain
+  ipv6:
+    enabled: true
+    set-only: false
+    table: crowdsec6
+    chain: crowdsec6-chain
+# packet filter
+pf:
+  # an empty string disables the anchor
+  anchor_name: &quot;&quot;</code></pre>
+</doc-codeblock></div>
+<p>You can safely ignore the <code v-pre>nftables</code> and <code v-pre>pf</code> sections of the config. They refer to firewall solution that we&#x27;re not using in this setup.</p>
+</doc-panel>
+<p>Save your edits and quit nano, then run <code v-pre>systemctl restart crowdsec-firewall-bouncer</code> to apply your changes, followed by <code v-pre>systemctl status crowdsec-firewall-bouncer</code> to make sure its both running and healthy. Finally, run <code v-pre>iptables -L DOCKER-USER</code> and <code v-pre>ip6tables -L DOCKER-USER</code>, each time checking that a <code v-pre>crowdsec-blacklists</code> rule has been applied. The name differs slightly between <code v-pre>ip</code> and <code v-pre>ip6</code>.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none" data-line="4,10"><code v-pre class="language-none">$ iptables -L DOCKER-USER
+Chain DOCKER-USER (1 references)
+target     prot opt source               destination
+DROP       all  --  anywhere             anywhere             match-set crowdsec-blacklists src
+RETURN     all  --  anywhere             anywhere
+
+$ ip6tables -L DOCKER-USER
+Chain DOCKER-USER (0 references)
+target     prot opt source               destination
+DROP       all      anywhere             anywhere             match-set crowdsec6-blacklists src</code></pre>
+</doc-codeblock></div>
+<p>That&#x27;s it. CrowdSec now runs in the background, monitoring your SSH logs, and will automatically ban all IPs that try to bruteforce that and any other service you connect in the future.</p>
+<doc-anchor-target id="useful-commands">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#useful-commands">#</doc-anchor-trigger>
+        <span>Useful Commands</span>
+    </h2>
+</doc-anchor-target>
+<ul>
+<li>Run <code v-pre>cscli metrics</code> to get an overview of the processed files, how often failed logins were detected, how often these caused bans (called &quot;overflow&quot;) and some other useful statistics</li>
+<li>Run <code v-pre>cscli alerts list</code> to see all the recent bans</li>
+<li>Use <code v-pre>cscli decisions list</code> to see the <strong>currently active</strong> bans
+<ul>
+<li>If you want to manually add an IP to ban, use <code v-pre>cscli decisions add &lt;IP&gt;</code> to do so. The commands&#x27; help page reveals additional options for range and duration.</li>
+</ul>
+</li>
+</ul>
 
                                 
                                 <!-- Required only on API pages -->
@@ -253,7 +314,7 @@
                             </div>
                             <footer class="clear-both">
                                 <div class="flex flex-wrap items-center justify-between mt-14">
-                                    <a class="my-2.5 inline-flex items-center text-sm whitespace-nowrap text-blue-500 dark:text-blue-400 hover:text-blue-700 hover:underline" href="https://github.com/justrainer/selfhost-guides/blob/main/src/first-steps/3-reverse-proxy/index.md" target="_blank" rel="noopener">
+                                    <a class="my-2.5 inline-flex items-center text-sm whitespace-nowrap text-blue-500 dark:text-blue-400 hover:text-blue-700 hover:underline" href="https://github.com/justrainer/selfhost-guides/blob/main/src/hardening/crowdsec.md" target="_blank" rel="noopener">
                                         <svg class="mr-1.5" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M20 12c-.55 0-1 .45-1 1v7c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h7c.55 0 1-.45 1-1s-.45-1-1-1H4C2.35 3 1 4.35 1 6v14c0 1.65 1.35 3 3 3h14c1.65 0 3-1.35 3-3v-7c0-.55-.45-1-1-1z" /><path d="M22.21 1.79c-1.18-1.18-3.24-1.18-4.41 0l-9.5 9.5c-.13.13-.22.29-.26.46l-1 4c-.08.34.01.7.26.95.18.2.44.3.7.3.08 0 .16-.01.24-.03l4-1c.18-.04.34-.13.46-.26l9.5-9.5c1.22-1.22 1.22-3.2.01-4.42zm-1.42 3l-9.3 9.3-2.11.53.53-2.11 9.3-9.3c.42-.42 1.16-.42 1.59 0 .43.43.43 1.15-.01 1.58z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         <span>Edit on GitHub</span>
                                     </a>
@@ -261,20 +322,20 @@
                             
                                 <nav class="flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../first-steps/2-docker-setup/">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../hardening/firewall/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
-                                                <span class="block mt-1">Docker Setup</span>
+                                                <span class="block mt-1">Strict Firewall</span>
                                             </span>
                                         </a>
                                     </div>
                             
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../first-steps/3-reverse-proxy/nginx/">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../apps/vaultwarden/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
-                                                <span class="block mt-1">Nginx</span>
+                                                <span class="block mt-1">Vaultwarden</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -318,6 +379,6 @@
 
     <div id="docs-overlay-target"></div>
 
-    <script>window.__DOCS__ = { "title": "Reverse Proxy", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false }</script>
+    <script>window.__DOCS__ = { "title": "CrowdSec", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false }</script>
 </body>
 </html>
