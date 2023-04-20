@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/selfhost-guides">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.734998006068">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.735340308933">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/selfhost-guides/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../../resources/css/retype.css?v=2.4.0.734998006068" rel="stylesheet" />
+    <link href="../../../resources/css/retype.css?v=2.4.0.735340308933" rel="stylesheet" />
 
-    <script type="text/javascript" src="../../../resources/js/config.js?v=2.4.0.734998006068" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../../../resources/js/config.js?v=2.4.0.735340308933" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../../../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../../../resources/js/lunr.js?v=2.4.0.734998006068" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../../../resources/js/prism.js?v=2.4.0.734998006068" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../../../resources/js/lunr.js?v=2.4.0.735340308933" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../../../resources/js/prism.js?v=2.4.0.735340308933" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -174,26 +174,6 @@
     <a href="https://nginxproxymanager.com/guide/#quick-setup" class="absolute block inset-0"></a>
 </div>
 </p>
-<doc-anchor-target id="prerequisites">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#prerequisites">#</doc-anchor-trigger>
-        <span>Prerequisites</span>
-    </h2>
-</doc-anchor-target>
-<p>
-<div class="mb-6 px-5 py-4 flex justify-between relative border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded transition-colors duration-150">
-    <div class="flex items-center text-blue-500 dark:text-blue-400">
-        <span class="inline-block mb-px">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="presentation" fill="currentColor"><path d="M17.28 9.28a.75.75 0 00-1.06-1.06l-5.97 5.97-2.47-2.47a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l6.5-6.5z"/><path fill-rule="evenodd" d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zM2.5 12a9.5 9.5 0 1119 0 9.5 9.5 0 01-19 0z"/></svg>
-        </span>
-        <span class="inline-block font-medium ml-2">Docker Setup</span>
-    </div>
-    <div class="flex items-center text-xs text-gray-400 dark:text-dark-400">
-        <span>../../2-docker-setup/</span>
-    </div>
-    <a href="../../2-docker-setup/" class="absolute block inset-0"></a>
-</div>
-</p>
 <doc-anchor-target id="installation-with-docker-compose">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#installation-with-docker-compose">#</doc-anchor-trigger>
@@ -222,6 +202,9 @@
 		volumes:
 			- data:/data
 			- data:/etc/letsencrypt
+        networks:
+          - default
+          - internal
 		depends_on:
 			- db
 
@@ -232,6 +215,8 @@
 		command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-file-per-table=1 --skip-innodb-read-only-compressed
 		volumes:
 			- db:/var/lib/mysql
+        networks:
+          - internal
 		environment:
 			- MYSQL_ROOT_PASSWORD=&lt;random string #2&gt;
 			- MYSQL_PASSWORD=&lt;random string #1&gt;
@@ -240,6 +225,7 @@
 
 networks:
 	default:
+  internal:
 
 volumes:
 	db:
@@ -254,13 +240,13 @@ volumes:
 <li>The <code v-pre>container_name</code> property manually defines the name, since the auto generated names are long and ugly. We will need to enter this into the Nginx interface in a minute!</li>
 </ul>
 </li>
-<li>The <code v-pre>networks</code> section defines the docker network that Nginx will sit in. In the future, any new container you want accessible from the internet needs to be in this network.</li>
+<li>The <code v-pre>networks</code> section defines two networks. the <code v-pre>default</code> network allows you to expose services to the internet. the <code v-pre>internal</code> network services exclusively for the communication between Nginx and its database.</li>
 <li>The <code v-pre>volumes</code> section defines two volumes, which are storage locations for persistent data, since a container will be deleted with all its included data whenever you stop or restart it.</li>
 </ul>
 <p>As you&#x27;ve done before, exit nano and save your changes. Once you&#x27;ve left nano, run <code v-pre>docker compose up</code> to download and start Nginx with its components. Once the logs mention a successful startup, open your browser and enter into the address bar <code v-pre>&lt;your server ip&gt;:81</code>. This should bring up the NPM login screen. The login credentials are <code v-pre>admin@example.com</code> and <code v-pre>changeme</code> as the password. You will be prompted to create a new password immediately.</p>
 <p>Once logged in, navigate to the green &quot;Proxy Hosts&quot; section, click &quot;Add Proxy Host&quot; in the top right, and enter the following details:</p>
 <ul>
-<li><strong>Domain Names:</strong> proxy.your.domain (replace <code v-pre>your.domain</code> with your actual domain)</li>
+<li><strong>Domain Names:</strong> <code v-pre>proxy.your.domain</code> (replace <code v-pre>your.domain</code> with your actual domain)</li>
 <li><strong>Forward Hostname:</strong> nginx (this is the name of the container in docker)</li>
 <li><strong>Port:</strong> 81</li>
 <li><strong>Toggle Common Exploits:</strong> On</li>
@@ -308,6 +294,7 @@ volumes:
 
 networks:
 	default:
+    internal:
 
 volumes:
 	db:
